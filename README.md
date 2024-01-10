@@ -1,5 +1,8 @@
 ## Spatial Temporal Attention with Shapley value (STAS)
+This is the code repository of paper [STAS: Spatial-Temporal Return Decomposition for Multi-agent Reinforcement Learning](https://arxiv.org/abs/2304.07520).
+
 ### Platform and Dependencies:
+
 - python 3.7
 - pytorch 1.7.1
 - gym 0.10.9
