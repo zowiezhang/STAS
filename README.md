@@ -15,7 +15,7 @@ Improved MPE extends the original MPE to a more complicated cooperative environm
 
 ```shell
 ## Install the improved MPE
-cd multiagent-particle-envs
+cd envs/multiagent-particle-envs
 pip install -e .
 ```
 
@@ -25,6 +25,7 @@ To train the current version, use:
 
 The argument 'STAS' means the current algorithm, there' s four to choose: STAS (ours), COMA, QMIX and SQDDPG. You can also change the reward_model_version to select the original STAS (v1) or STAS-ML (v2).
 
+We use **wandb** by default as the default tool for experiment observation. If you prefer to use local logs, you can add the **--wandb** parameter at the end of the command to disable wandb.
 ```shell
 ## train in Alice and Bob
 source train_AandB.sh STAS

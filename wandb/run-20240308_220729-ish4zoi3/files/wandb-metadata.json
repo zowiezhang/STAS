@@ -1,0 +1,34 @@
+{
+    "os": "Linux-5.4.0-150-generic-x86_64-with-debian-buster-sid",
+    "python": "3.7.16",
+    "heartbeatAt": "2024-03-08T14:07:30.219247",
+    "startedAt": "2024-03-08T14:07:29.046226",
+    "docker": null,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "gpu_count": 4,
+    "cpu_count": 64,
+    "cuda": null,
+    "args": [
+        "--exp_name",
+        "STAS_AandB",
+        "--method_name",
+        "STAS",
+        "--num_episodes",
+        "2000",
+        "--max_step_per_round",
+        "40",
+        "--cuda"
+    ],
+    "state": "running",
+    "program": "train_AandB.py",
+    "codePath": "train_AandB.py",
+    "git": {
+        "remote": "git@github.com:zowiezhang/STAS.git",
+        "commit": "efc84fc8e03b866aa0f830f1a42dae9d93a0c78b"
+    },
+    "email": "836745708@qq.com",
+    "root": "/home/sirui_chen/STAS",
+    "host": "ruc-PowerEdge-T640",
+    "username": "sirui_chen",
+    "executable": "/home/sirui_chen/anaconda3/envs/stas/bin/python"
+}
