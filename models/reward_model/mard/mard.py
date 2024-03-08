@@ -2,10 +2,8 @@ import torch
 from torch import nn
 import numpy as np
 import torch.nn.functional as F
-from models.reward_model.marudder.modules import *
+from models.reward_model.mard.modules import *
 from utils.norm import Normalizer
-
-# TODO: attention mask
 
 class ShapelyAttention(nn.Module):
     def __init__(self, emb_dim, n_heads, n_agents, sample_num, device, dropout=0.0):

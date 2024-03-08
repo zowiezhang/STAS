@@ -31,6 +31,7 @@ class EncoderLayer(nn.Module):
         # (bs, n_enc_seq, d_hidn), (bs, n_head, n_enc_seq, n_enc_seq)
         return ffn_outputs, attn_prob
 
+""" multi agent attention """
 class MultiHeadAttention(nn.Module):
     def __init__(self, d_hidden, n_head, dropout):
         super().__init__()
@@ -82,7 +83,61 @@ class MultiHeadAttention(nn.Module):
         # (bs, n_q_seq, d_hidn), (bs, n_head, n_q_seq, n_k_seq)
         return output, attn_prob
 
+class MultiAgentAttention(nn.Module):
+    def __init__(self, d_hidden, n_head, n_agents, dropout, device):
+        super().__init__()
+        if d_hidden%n_head != 0:
+            raise ValueError(
+                f"The hidden size ({d_hidden}) is not a multiple of the number of attention "
+                f"heads ({n_head})"
+            )
+        self.d_hidden = d_hidden
+        self.n_head = n_head
+        self.n_agents = n_agents
+        self.emb_dropout = dropout
+        self.device = device
+        self.attn_head_size = int(self.d_hidden/self.n_head)
+        self.all_head_size = self.attn_head_size*self.n_head
 
+        self.W_Q = nn.ModuleList([nn.Linear(self.d_hidden, self.all_head_size) for _ in range(self.n_agents)])
+        self.W_K = nn.Linear(self.d_hidden, self.all_head_size)
+        self.W_V = nn.Linear(self.d_hidden, self.all_head_size)
+        self.scaled_dot_attn = ScaledDotProductAttention(self.emb_dropout, self.attn_head_size)
+        self.linear = nn.Linear(self.all_head_size, self.d_hidden)
+        self.dropout = nn.Dropout(self.emb_dropout)
+
+    def transpose_for_scores(self, x):
+        new_x_shape = x.size()[:-1] + (self.n_head, self.attn_head_size)
+        x = x.view(new_x_shape)
+        return x.permute(0, 2, 1, 3)
+
+    def forward(self, Q, K, V, attn_mask):
+
+        # (bs, n_head, n_q_seq, attn_head_size)
+        Q = torch.cat([self.W_Q[i](Q[:,i,:]).unsqueeze(dim=1) for i in range(self.n_agents)], dim=1)
+        q_s = self.transpose_for_scores(Q)
+        # q_s = self.transpose_for_scores(self.W_Q(Q))
+        # (bs, n_head, n_k_seq, attn_head_size)
+        k_s = self.transpose_for_scores(self.W_K(K))
+        # (bs, n_head, n_v_seq, attn_head_size)
+        v_s = self.transpose_for_scores(self.W_V(V))
+
+        # (bs, n_head, n_q_seq, n_k_seq)
+        attn_mask = attn_mask.unsqueeze(1).repeat(1, self.n_head, 1, 1)
+
+        # (bs, n_head, n_q_seq, d_head), (bs, n_head, n_q_seq, n_k_seq)
+        context, attn_prob = self.scaled_dot_attn(q_s, k_s, v_s, attn_mask)
+        # (bs, n_head, n_q_seq, all_head_size)
+
+        context = context.permute(0, 2, 1, 3).contiguous()
+        context = context.view(context.size()[:-2] + (self.all_head_size,))
+        # (bs, n_head, n_q_seq, e_embd)
+        output = self.linear(context)
+        output = self.dropout(output)
+        
+        # (bs, n_q_seq, d_hidn), (bs, n_head, n_q_seq, n_k_seq)
+        return output, attn_prob
+    
 """ scale dot product attention """
 class ScaledDotProductAttention(nn.Module):
     def __init__(self, dropout, attn_head_size):

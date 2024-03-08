@@ -135,10 +135,10 @@ class Runner_QMIX_AandB:
                 self.replay_buffer.store_transition(episode_step, obs_n, s, avail_a_n, last_onehot_a_n, a_n, r, dw)
                 # Decay the epsilon
                 self.epsilon = self.epsilon - self.args.epsilon_decay if self.epsilon - self.args.epsilon_decay > self.args.epsilon_min else self.args.epsilon_min
-                self.episode += 1
 
             if all(done):
                 break
+            self.episode += 1
 
         if not evaluate:
             # An episode is over, store obs_n, s and avail_a_n in the last step
@@ -402,13 +402,12 @@ class Runner_COMA_AandB:
                 self.agent.memory.reward.append(r)
                 for i in range(self.n_agents):
                     self.agent.memory.done[i].append(done_n[i])
-                
-                self.episode += 1
 
             obs_n = next_obs_n
         
             if all(done_n):
                 break
+        self.episode += 1
 
         return win_tag, episode_reward, t
     
