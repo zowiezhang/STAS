@@ -245,8 +245,8 @@ class Runner_STAS_AandB:
             ################################################
             # train the reward redistribution model
                 
-            if (i_episode+1) % self.args.reward_model_update_freq == 0 and (len(self.memory_e)>self.args.reward_model_starts):
-            # if (len(self.memory_e)>40):
+            # if (i_episode+1) % self.args.reward_model_update_freq == 0 and (len(self.memory_e)>self.args.reward_model_starts):
+            if (len(self.memory_e)>40):
                 epoch_train_total_reward_loss = []
                 if self.args.reward_norm:
                     self.reward_model.module.reward_normalizer.update(self.memory_e.get_update_data())

@@ -47,7 +47,6 @@ class ReplayMemory_episode(object):
             self.data.append(Transition_e(*args))
 
     def sample_trajectory(self, n_trajectories=128):
-        # n_trajectories = 16
         sample_traj = random.sample(self.memory, n_trajectories)
         sample_traj, sample_length = zip(*sample_traj)
         episode_length = torch.Tensor(sample_length).long()
