@@ -38,3 +38,16 @@ Return decomposition model can be found in model/reward_model/mard/mard.py
 Independent policy can be found in model/policy/ppo.py
 
 All configs are set in configs/*
+
+## Citation
+
+If you find our code or paper useful, please cite the paper:
+
+```
+@inproceedings{chen2024stas,
+  title={STAS: Spatial-Temporal Return Decomposition for Multi-agent Reinforcement Learning},
+  author={Chen, Sirui and Zhang, Zhaowei and Yang, Yaodong and Du, Yali},
+  booktitle={The 38th Annual AAAI Conference on Artificial Intelligence},
+  year={2024}
+}
+```
